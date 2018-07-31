@@ -8,5 +8,4 @@ import javax.transaction.Transactional;
 
 @Repository
 public interface CustomerDAO extends JpaRepository<Customer ,Long>{
-
 }
