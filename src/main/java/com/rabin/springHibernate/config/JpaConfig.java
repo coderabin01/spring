@@ -21,7 +21,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "com.rabin.springHibernate.dao")
+@EnableJpaRepositories(basePackages = "com.rabin.springHibernate.repository")
 @PropertySource({"classpath:application.properties"})
 public class JpaConfig {
 
