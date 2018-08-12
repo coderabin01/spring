@@ -1,15 +1,21 @@
 package com.rabin.springHibernate.controller;
 
 import com.rabin.springHibernate.dto.ApiResponseMessage;
+import com.rabin.springHibernate.dto.CustomerRequestDTO;
+import com.rabin.springHibernate.dto.CustomerRequestDTOList;
 import com.rabin.springHibernate.exception.CustomerNotFoundException;
 import com.rabin.springHibernate.model.Customer;
 import com.rabin.springHibernate.service.CustomerService;
 import com.rabin.springHibernate.utils.ApiResponeMessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +30,9 @@ public class CustomerController {
     ApiResponeMessageUtil apiResponseMessageUtil;
 
     @GetMapping
-    public List<Customer> getAllCustomer(){
-        return customerService.getAllCustomer();
+    public ResponseEntity<CustomerRequestDTOList> getAllCustomer(@PageableDefault(sort ="id", direction = Sort.Direction.DESC) Pageable pageable){
+        CustomerRequestDTOList customerRequestDTOList = customerService.getAllCustomer(pageable);
+        return new ResponseEntity<CustomerRequestDTOList>(customerRequestDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -34,20 +41,20 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponseMessage> addCustomer(@RequestBody Customer customer){
-        customerService.addCustomer(customer);
+    public ResponseEntity<ApiResponseMessage> addCustomer(@RequestBody CustomerRequestDTO customerRequestDTO){
+        customerService.addCustomer(customerRequestDTO);
         ApiResponseMessage response = apiResponseMessageUtil.getApiResponseMessage("3001");
         return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponseMessage> updateCustomer(@RequestBody Customer customer, @PathVariable long id){
+    public ResponseEntity<ApiResponseMessage> updateCustomer(@RequestBody @Valid CustomerRequestDTO customerRequestDTO, @PathVariable long id){
         Optional<Customer> customerToRemove = customerService.retrieveCustomer(id);
         if(!customerToRemove.isPresent()){
             throw new CustomerNotFoundException("Customer with id - "+id+" is not found");
         }
-        customer.setId(id);
-        customerService.addCustomer(customer);
+        customerRequestDTO.setId(id);
+        customerService.addCustomer(customerRequestDTO);
         ApiResponseMessage response = apiResponseMessageUtil.getApiResponseMessage("3002");
         return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.OK);
     }
