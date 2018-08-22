@@ -5,6 +5,8 @@ import com.rabin.springHibernate.dto.ApiResponseMessage;
 import com.rabin.springHibernate.exception.StudentNotFoundException;
 import com.rabin.springHibernate.model.User;
 import com.rabin.springHibernate.utils.ApiResponeMessageUtil;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    final static Logger logger = Logger.getLogger(UserController.class);
 
     @Autowired
     private UserDAO userDAO;
@@ -30,6 +34,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User retrieveUser(@PathVariable long id){
+        logger.info("retrieveUser(): START");
         Optional<User> user = userDAO.findById(id);
 
         if(!user.isPresent()){

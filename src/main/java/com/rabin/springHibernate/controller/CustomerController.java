@@ -7,6 +7,7 @@ import com.rabin.springHibernate.exception.CustomerNotFoundException;
 import com.rabin.springHibernate.model.Customer;
 import com.rabin.springHibernate.service.CustomerService;
 import com.rabin.springHibernate.utils.ApiResponeMessageUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @RequestMapping("/customers")
 public class CustomerController {
 
+    final static Logger logger = Logger.getLogger(CustomerController.class);
     @Autowired
     CustomerService customerService;
 
@@ -31,17 +33,20 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<CustomerRequestDTOList> getAllCustomer(@PageableDefault(sort ="id", direction = Sort.Direction.DESC) Pageable pageable){
+        logger.info("getAllCustomer(): START");
         CustomerRequestDTOList customerRequestDTOList = customerService.getAllCustomer(pageable);
         return new ResponseEntity<CustomerRequestDTOList>(customerRequestDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public Optional<Customer> getCustomerById(@PathVariable long id) {
+        logger.info(String.format("getCustomerById with id %d", id));
         return customerService.retrieveCustomer(id);
     }
 
     @PostMapping
     public ResponseEntity<ApiResponseMessage> addCustomer(@RequestBody CustomerRequestDTO customerRequestDTO){
+        logger.info("addCustomer(): START");
         customerService.addCustomer(customerRequestDTO);
         ApiResponseMessage response = apiResponseMessageUtil.getApiResponseMessage("3001");
         return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.OK);
@@ -49,6 +54,7 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponseMessage> updateCustomer(@RequestBody @Valid CustomerRequestDTO customerRequestDTO, @PathVariable long id){
+        logger.info("updateCustomer(): START");
         Optional<Customer> customerToRemove = customerService.retrieveCustomer(id);
         if(!customerToRemove.isPresent()){
             throw new CustomerNotFoundException("Customer with id - "+id+" is not found");
@@ -61,6 +67,7 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponseMessage> deleteCustomer(@PathVariable long id){
+        logger.info("deleteCustomer(): START");
         customerService.deleteCustomer(id);
         ApiResponseMessage response = apiResponseMessageUtil.getApiResponseMessage("3003");
         return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.OK);

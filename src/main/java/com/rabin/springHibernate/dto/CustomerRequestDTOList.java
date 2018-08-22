@@ -35,17 +35,17 @@ public class CustomerRequestDTOList {
         this.customers = customers;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CustomerRequestDTOList that = (CustomerRequestDTOList) o;
-        return customerCount == that.customerCount;
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (customerCount ^ (customerCount >>> 32));
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        CustomerRequestDTOList that = (CustomerRequestDTOList) o;
+//        return customerCount == that.customerCount;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return (int) (customerCount ^ (customerCount >>> 32));
+//    }
 }
